@@ -14,8 +14,41 @@ client.once('ready', () => {
   console.log(`Bot online as ${client.user.tag}`);
 });
 
-client.on('messageCreate', async (message) => {
-  if (message.author.bot) return;
+// Diary Room Request
+if (message.content === "!dr_request") {
+  const player = message.member;
+  const guild = message.guild;
+
+  // Find Production role
+  const productionRole = guild.roles.cache.find(r => r.name === "Production");
+
+  if (!productionRole) {
+    return message.reply("Production role not found. Create a 'Production' role first.");
+  }
+
+  const threadName = `dr-${player.user.username}-${Date.now()}`;
+
+  const channel = await guild.channels.create({
+    name: threadName,
+    type: 0, // Text channel
+    permissionOverwrites: [
+      {
+        id: guild.roles.everyone,
+        deny: ["ViewChannel"]
+      },
+      {
+        id: player.id,
+        allow: ["ViewChannel", "SendMessages"]
+      },
+      {
+        id: productionRole.id,
+        allow: ["ViewChannel", "SendMessages"]
+      }
+    ]
+  });
+
+  channel.send(`🎥 Diary Room session started for ${player}. Production has been notified.`);
+}
 
   // Assign HOH
   if (message.content.startsWith('!assign_hoh')) {
