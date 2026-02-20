@@ -7,5 +7,6 @@
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
     "mongoose": "^8.0.0"
-  }
+  },
+  "engines": { "node": "18.x" }
 }
